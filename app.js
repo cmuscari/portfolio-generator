@@ -9,7 +9,16 @@ const promptUser = () => {
     {
       type: 'input',
       name: 'name',
-      message: 'What is your name?'
+      message: 'What is your name? (Required)',
+      validate: nameInput => {
+        if (nameInput) {
+          return true;
+        }
+        else {
+          console.log("Please enter your name!");
+          return false;
+        }
+      }
     },
     {
       type: 'input',
@@ -41,12 +50,30 @@ Add a New Project
     {
       type: 'input',
       name: 'name',
-      message: 'What is the name of your project?'
+      message: 'What is the name of your project? (Required)',
+      validate: projectNameInput => {
+        if (projectNameInput) {
+          return true;
+        }
+        else {
+          console.log("Please enter your project name!");
+          return false;
+        }
+      }
     },
     {
       type: 'input',
       name: 'description',
-      message: 'Provide a description of the project (Required)'
+      message: 'Provide a description of the project (Required)',
+      validate: projectDescription => {
+        if (projectDescription) {
+          return true;
+        }
+        else {
+          console.log("Please enter your project description!");
+          return false;
+        }
+      }
     },
     {
       type: 'checkbox',
@@ -57,7 +84,16 @@ Add a New Project
     {
       type: 'input',
       name: 'link',
-      message: 'Enter the GitHub link to your project. (Required)'
+      message: 'Enter the GitHub link to your project. (Required)',
+      validate: githubLink => {
+        if (githubLink) {
+          return true;
+        }
+        else {
+          console.log("Please enter your project's GitHub link!");
+          return false;
+        }
+      }
     },
     {
       type: 'confirm',
@@ -72,11 +108,14 @@ Add a New Project
       default: false
     }
   ])
+    // take project data entered & push it into the portfolioData.projects array
     .then(projectData => {
       portfolioData.projects.push(projectData);
+      // if user selected to add more projects, confirmAddProject would equal true.  If true, return to promptProject function, making sure to pass in portfolioData, so we don't clear/overwrite to empty array
       if (projectData.confirmAddProject) {
         return promptProject(portfolioData);
       }
+      // if user did not want to add more projects, return the entire portfolioData
       else {
         return portfolioData;
       }
@@ -84,6 +123,7 @@ Add a New Project
 };
 
 
+// call function - start with promptUser(), then promptProject(), then execute an action with the returned entire portfolioData
 promptUser()
   .then(promptProject)
   .then(portfolioData => {
