@@ -1,6 +1,6 @@
 const inquirer = require('inquirer');
-// const fs = require('fs');
-// const generatePage = require('./src/page-template.js');
+const fs = require('fs');
+const generatePage = require('./src/page-template.js');
 
 
 // prompt user for profile questions
@@ -140,18 +140,20 @@ Add a New Project
 // call function - start with promptUser(), then promptProject(), then execute an action with the returned entire portfolioData
 promptUser()
   .then(promptProject)
+  // take returned entire portfolioData & pass it into the generatePage function that is linked at the top of this file to return generated HTML (stored in the pageHTML variable)
   .then(portfolioData => {
-    console.log(portfolioData);
+    const pageHTML = generatePage(portfolioData);
+
+    // actually write the html file using the code in the newly created pageHTML variable
+    fs.writeFile('./index.html', pageHTML, err => {
+      if (err) throw err;
+
+      console.log('Portfolio complete! Check out index.html to see the output!');
+    });
   });
 
 
 
-// const pageHTML = generatePage(name, github);
 
-// fs.writeFile('./index.html', pageHTML, err => {
-//   if (err) throw err;
-
-//   console.log('Portfolio complete! Check out index.html to see the output!');
-// });
 
 
