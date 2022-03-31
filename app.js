@@ -1,6 +1,6 @@
 const inquirer = require('inquirer');
-const fs = require('fs');
 const generatePage = require('./src/page-template.js');
+const { writeFile, copyFile } = require('./utils/generate-site.js');
 
 
 // prompt user for profile questions
@@ -36,7 +36,7 @@ const promptUser = () => {
       name: 'about',
       message: 'Provide some information about yourself:',
       when: ({ confirmAbout }) => {
-        if(confirmAbout) {
+        if (confirmAbout) {
           return true;
         }
         else {
@@ -142,16 +142,24 @@ promptUser()
   .then(promptProject)
   // take returned entire portfolioData & pass it into the generatePage function that is linked at the top of this file to return generated HTML (stored in the pageHTML variable)
   .then(portfolioData => {
-    const pageHTML = generatePage(portfolioData);
-
-    // actually write the html file using the code in the newly created pageHTML variable
-    fs.writeFile('./index.html', pageHTML, err => {
-      if (err) throw err;
-
-      console.log('Portfolio complete! Check out index.html to see the output!');
-    });
+    return generatePage(portfolioData);
+  })
+  .then(pageHTML => {
+    return writeFile(pageHTML);
+  })
+  .then(writeFileResponse => {
+    console.log(writeFileResponse);
+    return copyFile();
+  })
+  .then(copyFileResponse => {
+    console.log(copyFileResponse);
+  })
+  .catch(err => {
+    console.log(err);
   });
 
+
+  
 
 
 
